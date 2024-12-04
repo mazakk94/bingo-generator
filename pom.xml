@@ -15,11 +15,11 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>bingo-generator</name>
     <description>bingo-generator</description>
-    <url/>
 
-      <properties>
-        <java.version>23</java.version>
+    <properties>
+        <java.version>21</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

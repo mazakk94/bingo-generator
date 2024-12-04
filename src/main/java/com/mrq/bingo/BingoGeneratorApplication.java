@@ -1,12 +1,24 @@
 package com.mrq.bingo;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.mrq.bingo.factory.BingoStripsFactory;
 
-@SpringBootApplication
 public class BingoGeneratorApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(BingoGeneratorApplication.class, args);
+        int count = 10000;
+        if (args.length > 0) {
+            try {
+                count = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                System.out.printf("cannot parse argument [%s], count will be 10000%n", args[0]);
+            }
+        }
+
+        long startTime = System.nanoTime();
+        BingoStripsFactory.generateBingoStrips(count);
+        long endTime = System.nanoTime();
+
+        long duration = endTime - startTime; // Time in nanoseconds
+        System.out.println("Generated " + count + " Bingo90 strips in " + (duration / 1_000_000) + " milliseconds");
     }
 }
