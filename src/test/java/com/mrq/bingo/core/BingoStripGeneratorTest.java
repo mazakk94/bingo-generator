@@ -15,13 +15,13 @@ public class BingoStripGeneratorTest {
 
     @Test
     public void testEachStripContainsSixTickets() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         assertEquals(6, bingoStrip.size(), "Each strip must contain 6 tickets.");
     }
 
     @Test
     public void testEachTicketContainsNineColumns() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         for (List<List<Integer>> ticket : bingoStrip) {
             assertEquals(9, ticket.size(), "Each ticket must contain 9 columns.");
         }
@@ -29,7 +29,7 @@ public class BingoStripGeneratorTest {
 
     @Test
     public void testEachColumnInTicketContainsThreeSortedElements() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         for (List<List<Integer>> ticket : bingoStrip) {
             for (List<Integer> column : ticket) {
                 assertEquals(3, column.size(), "Each ticket column must contain 3 elements.");
@@ -48,7 +48,7 @@ public class BingoStripGeneratorTest {
 
     @Test
     public void testTicketColumnsContainsOneTwoOrThreeNumbers() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         for (List<List<Integer>> ticket : bingoStrip) {
             for (List<Integer> column : ticket) {
                 long nonZeroCount = column.stream().filter(num -> num != 0).count();
@@ -60,7 +60,7 @@ public class BingoStripGeneratorTest {
 
     @Test
     public void testEachRowHasFiveNumbersAndFourBlankSpaces() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         for (List<List<Integer>> ticket : bingoStrip) {
             for (int rowIndex = 0; rowIndex < 3; rowIndex++) {
                 List<Integer> row = getRow(ticket, rowIndex);
@@ -89,7 +89,7 @@ public class BingoStripGeneratorTest {
 
     @Test
     public void testColumnsContainProperNumbers() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         List<List<Integer>> columns = transformBingoStripToColumns(bingoStrip);
         validateColumn(columns.get(0), 1, 9);
         validateColumn(columns.get(1), 10, 19);
@@ -120,7 +120,7 @@ public class BingoStripGeneratorTest {
 
     @Test
     public void testNoDuplicates() {
-        List<List<List<Integer>>> bingoStrip = BingoStripGenerator.generateBingoStrip();
+        List<List<List<Integer>>> bingoStrip = new BingoStripGenerator().generateBingoStrip();
         List<Integer> allNumbers = flattenBingoStrip(bingoStrip);
         assertEquals(allNumbers.size(), 90, "The list should have exactly size of 90");
         assertEquals(allNumbers.size(), allNumbers.stream().distinct().count(), "The list contains duplicate elements: " + allNumbers);

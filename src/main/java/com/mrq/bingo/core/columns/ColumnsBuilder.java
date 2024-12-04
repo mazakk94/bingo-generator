@@ -9,14 +9,14 @@ import static com.mrq.bingo.core.BingoStripGenerator.TICKET_COLUMNS_COUNT;
 
 public class ColumnsBuilder {
 
-    public static final int BINGO_NUMBERS_COUNT = 90;
+    private static final int BINGO_NUMBERS_COUNT = 90;
 
-    public static List<List<Integer>> prepareShuffledNumbersInColumns() {
+    public List<List<Integer>> prepareShuffledNumbersInColumns() {
         List<Integer> numbers = initializeShuffledList();
         return prepareAvailableNumbersList(numbers);
     }
 
-    public static List<List<List<Integer>>> initializeEmptyTickets() {
+    public List<List<List<Integer>>> initializeEmptyTickets() {
         // Initialize 6 tickets - each ticket has 9 lists representing future ticket columns
         List<List<List<Integer>>> tickets = new ArrayList<>();
         for (int i = 0; i < TICKETS_COUNT; i++) {
@@ -29,7 +29,7 @@ public class ColumnsBuilder {
         return tickets;
     }
 
-    private static List<Integer> initializeShuffledList() {
+    private List<Integer> initializeShuffledList() {
         // Generate a shuffled list of numbers from 1 to 90
         List<Integer> numbersList = new ArrayList<>();
         for (int i = 1; i <= BINGO_NUMBERS_COUNT; i++) {
@@ -39,7 +39,7 @@ public class ColumnsBuilder {
         return numbersList;
     }
 
-    private static List<List<Integer>> prepareAvailableNumbersList(List<Integer> numbers) {
+    private List<List<Integer>> prepareAvailableNumbersList(List<Integer> numbers) {
         // Split into 9 lists grouping them by ticket columns
         List<List<Integer>> availableNumbers = new ArrayList<>();
         for (int i = 0; i < TICKET_COLUMNS_COUNT; i++) {
@@ -52,7 +52,7 @@ public class ColumnsBuilder {
         return availableNumbers;
     }
 
-    private static int getColumnIndexForNumber(int number) {
+    private int getColumnIndexForNumber(int number) {
         if (number < 10) {
             return 0;
         } else if (number < 20) {

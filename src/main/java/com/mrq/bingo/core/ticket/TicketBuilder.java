@@ -11,36 +11,64 @@ import static com.mrq.bingo.core.blanks.BlanksProcessor.TICKET_COLUMN_SIZE;
 
 public class TicketBuilder {
 
-    public static final int NUMBERS_TO_DISTRIBUTE = 6;
+    private static final int NUMBERS_TO_DISTRIBUTE = 6;
     private static final int LAST_COLUMN_INDEX = 8;
+    private static final int FOURTH_TICKET_INDEX = 3;
+    private static final int FIFTH_TICKET_INDEX = 4;
+    private static final int SIXTH_TICKET_INDEX = 5;
 
-    public static void fillEachTicketColumnWithOneNumber(List<List<Integer>> availableNumbers, List<List<List<Integer>>> tickets) {
+    private final List<List<Integer>> availableNumbers;
+    private final List<List<List<Integer>>> ticketsStrip;
+
+    public TicketBuilder(List<List<Integer>> availableNumbers, List<List<List<Integer>>> ticketsStrip) {
+        this.availableNumbers = availableNumbers;
+        this.ticketsStrip = ticketsStrip;
+    }
+
+    public List<List<List<Integer>>> distributeNumbers() {
+        fillEachTicketColumnWithOneNumber();
+        processFirstThreeTickets();
+        processFourthTicket();
+        processFifthTicket();
+        processSixthTicket();
+        return ticketsStrip;
+    }
+
+    private void fillEachTicketColumnWithOneNumber() {
         for (int i = 0; i < TICKETS_COUNT; i++) {
             for (int col = 0; col < TICKET_COLUMNS_COUNT; col++) {
-                insertNumberToColumn(availableNumbers.get(col), tickets.get(i).get(col));
+                insertNumberToColumn(availableNumbers.get(col), ticketsStrip.get(i).get(col));
             }
         }
     }
 
-    public static void processNthTicket(List<List<Integer>> availableNumbers, List<List<Integer>> ticket) {
+    private void processNthTicket(List<List<Integer>> ticket) {
         for (int i = 0; i < NUMBERS_TO_DISTRIBUTE; i++) {
-            int columnNumber = getRandomAvailableColumnNumber(availableNumbers, ticket);
+            int columnNumber = getRandomAvailableColumnNumber(ticket);
             insertNumberToColumn(availableNumbers.get(columnNumber), ticket.get(columnNumber));
         }
     }
 
-    public static void processFourthTicket(List<List<Integer>> availableNumbers, List<List<Integer>> ticket) {
+    private void processFirstThreeTickets() {
+        for (int n = 0; n < 3; n++) {
+            processNthTicket(ticketsStrip.get(n));
+        }
+    }
+
+    private void processFourthTicket() {
+        List<List<Integer>> ticket = ticketsStrip.get(FOURTH_TICKET_INDEX);
         for (int i = 0; i < NUMBERS_TO_DISTRIBUTE; i++) {
-            int columnNumber = getFourthTicketColumnNumber(availableNumbers, ticket);
+            int columnNumber = getFourthTicketColumnNumber(ticket);
             insertNumberToColumn(availableNumbers.get(columnNumber), ticket.get(columnNumber));
         }
     }
 
-    public static void processFifthTicket(List<List<Integer>> availableNumbers, List<List<Integer>> ticket) {
+    private void processFifthTicket() {
+        List<List<Integer>> ticket = ticketsStrip.get(FIFTH_TICKET_INDEX);
         int distributedNumbers = 0;
 
         // take 2 numbers from each column of available numbers where there are 4 numbers left
-        for (int index : getIndicesWithSize(availableNumbers, 4)) {
+        for (int index : getIndicesWithSize(4)) {
             // Distribute two numbers
             for (int i = 0; i < 2; i++) {
                 insertNumberToColumn(availableNumbers.get(index), ticket.get(index));
@@ -49,7 +77,7 @@ public class TicketBuilder {
         }
 
         // take at least 1 number from columns that has 3 left
-        for (int index : getIndicesWithSize(availableNumbers, 3)) {
+        for (int index : getIndicesWithSize(3)) {
             if (distributedNumbers < NUMBERS_TO_DISTRIBUTE) {
                 insertNumberToColumn(availableNumbers.get(index), ticket.get(index));
                 distributedNumbers++;
@@ -60,13 +88,17 @@ public class TicketBuilder {
 
         // distribute normally what's left
         while (distributedNumbers < NUMBERS_TO_DISTRIBUTE) {
-            int columnNumber = getRandomAvailableColumnNumber(availableNumbers, ticket);
+            int columnNumber = getRandomAvailableColumnNumber(ticket);
             insertNumberToColumn(availableNumbers.get(columnNumber), ticket.get(columnNumber));
             distributedNumbers++;
         }
     }
 
-    private static void insertNumberToColumn(List<Integer> availableNumbersColumn, List<Integer> selectedColumn) {
+    private void processSixthTicket() {
+        processNthTicket(ticketsStrip.get(SIXTH_TICKET_INDEX));
+    }
+
+    private void insertNumberToColumn(List<Integer> availableNumbersColumn, List<Integer> selectedColumn) {
         int number = availableNumbersColumn.remove(0);
         // Find the correct position to insert the number in ascending order
         int index = 0;
@@ -76,21 +108,21 @@ public class TicketBuilder {
         selectedColumn.add(index, number);
     }
 
-    private static int getFourthTicketColumnNumber(List<List<Integer>> availableNumbers, List<List<Integer>> ticket) {
+    private int getFourthTicketColumnNumber(List<List<Integer>> ticket) {
         int columnNumber;
         if (availableNumbers.get(LAST_COLUMN_INDEX).size() >= 5) {
             columnNumber = LAST_COLUMN_INDEX;
         } else {
-            columnNumber = getRandomAvailableColumnNumber(availableNumbers, ticket);
+            columnNumber = getRandomAvailableColumnNumber(ticket);
         }
         return columnNumber;
     }
 
-    private static int getRandomAvailableColumnNumber(List<List<Integer>> availableNumbers, List<List<Integer>> ticket) {
+    private int getRandomAvailableColumnNumber(List<List<Integer>> ticket) {
         int randomizedColumnNumber;
         boolean columnHasSpaceForNewNumber;
         // we only take columns indices that have existing numbers to distribute
-        List<Integer> availableColumnNumbers = getAvailableColumnNumbers(availableNumbers);
+        List<Integer> availableColumnNumbers = getAvailableColumnNumbers();
         do {
             randomizedColumnNumber = getRandomNumberFromList(availableColumnNumbers);
             columnHasSpaceForNewNumber = ticket.get(randomizedColumnNumber).size() < TICKET_COLUMN_SIZE;
@@ -98,21 +130,18 @@ public class TicketBuilder {
         return randomizedColumnNumber; // return number only if there is space in ticket column to be added
     }
 
-    private static List<Integer> getIndicesWithSize(List<List<Integer>> availableNumbers, int x) {
-        return IntStream.range(0, availableNumbers.size())
-                .filter(i -> availableNumbers.get(i).size() == x)
-                .boxed()
-                .toList();
+    private List<Integer> getIndicesWithSize(int size) {
+        return IntStream.range(0, availableNumbers.size()).filter(i -> availableNumbers.get(i).size() == size).boxed().toList();
     }
 
-    private static List<Integer> getAvailableColumnNumbers(List<List<Integer>> availableNumbers) {
+    private List<Integer> getAvailableColumnNumbers() {
         return IntStream.range(0, availableNumbers.size())
                 .filter(i -> !availableNumbers.get(i).isEmpty())
                 .boxed()
                 .collect(Collectors.toList());
     }
 
-    private static int getRandomNumberFromList(List<Integer> numbers) {
+    private int getRandomNumberFromList(List<Integer> numbers) {
         int index = ThreadLocalRandom.current().nextInt(0, numbers.size());
         return numbers.get(index);
     }

@@ -7,14 +7,14 @@ import java.util.List;
 
 public class BingoStripsFactory {
 
-    public static void generateBingoStrips(int count) {
+    public void generateBingoStrips(int count) {
         List<List<List<Integer>>> bingoStrip;
         for (int i = 0; i < count; i++) {
             if (i == 0) {
-                bingoStrip = BingoStripGenerator.generateBingoStrip();
+                bingoStrip = new BingoStripGenerator().generateBingoStrip();
                 BingoPrintUtil.printBingoStrip(bingoStrip);
             } else {
-                BingoStripGenerator.generateBingoStrip();
+                new BingoStripGenerator().generateBingoStrip();
             }
         }
     }

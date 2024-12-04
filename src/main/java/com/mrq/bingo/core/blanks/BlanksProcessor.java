@@ -13,20 +13,21 @@ public class BlanksProcessor {
     private static final int BLANK_FIELD = 0;
     private static final int EXPECTED_BLANKS_COUNT = 4;
 
-    public static void fillTicketsBlanks(List<List<List<Integer>>> strip) {
+    public List<List<List<Integer>>> fillTicketsBlanks(List<List<List<Integer>>> strip) {
         for (List<List<Integer>> ticket : strip) {
             fillBlanks(ticket);
         }
+        return strip;
     }
 
-    private static void fillBlanks(List<List<Integer>> ticket) {
+    private void fillBlanks(List<List<Integer>> ticket) {
         fillFirstRowWithBlanks(ticket);
         fillSizeOneColumnsWithBlanks(ticket);
         fillMiddleRowWithBlanks(ticket);
         fillLastRowWithBlanks(ticket);
     }
 
-    private static void fillFirstRowWithBlanks(List<List<Integer>> ticket) {
+    private void fillFirstRowWithBlanks(List<List<Integer>> ticket) {
         List<Integer> nonFullColumnsIndices = getShuffledColumnIndicesByRule(ticket, i -> ticket.get(i).size() < TICKET_COLUMN_SIZE);
         for (int i = 0; i < EXPECTED_BLANKS_COUNT; i++) {
             int index = nonFullColumnsIndices.remove(0);
@@ -34,20 +35,7 @@ public class BlanksProcessor {
         }
     }
 
-    private static List<Integer> getShuffledColumnIndicesByRule(List<List<Integer>> ticket, IntPredicate predicate) {
-        return IntStream.range(0, ticket.size())
-                .filter(predicate)
-                .boxed()
-                .collect(Collectors.collectingAndThen(
-                        Collectors.toList(),
-                        list -> {
-                            Collections.shuffle(list);
-                            return list;
-                        }
-                ));
-    }
-
-    private static void fillSizeOneColumnsWithBlanks(List<List<Integer>> ticket) {
+    private void fillSizeOneColumnsWithBlanks(List<List<Integer>> ticket) {
         for (int index : getColumnIndicesByRule(ticket, i -> ticket.get(i).size() == 1)) {
             List<Integer> column = ticket.get(index);
             column.add(BLANK_FIELD);
@@ -55,7 +43,7 @@ public class BlanksProcessor {
         }
     }
 
-    private static void fillMiddleRowWithBlanks(List<List<Integer>> ticket) {
+    private void fillMiddleRowWithBlanks(List<List<Integer>> ticket) {
         List<Integer> indicesWithTwoNumbers = getShuffledColumnIndicesByRule(ticket, i -> ticket.get(i).size() == 2);
         IntPredicate hasBlankInTheMiddle = index -> ticket.get(index).size() >= 2 && ticket.get(index).get(MIDDLE_INDEX) == BLANK_FIELD;
         List<Integer> indicesWithBlankInTheMiddle = getColumnIndicesByRule(ticket, hasBlankInTheMiddle);
@@ -67,7 +55,7 @@ public class BlanksProcessor {
         }
     }
 
-    private static void fillLastRowWithBlanks(List<List<Integer>> ticket) {
+    private void fillLastRowWithBlanks(List<List<Integer>> ticket) {
         for (List<Integer> column : ticket) {
             if (column.size() < TICKET_COLUMN_SIZE) {
                 column.add(BLANK_FIELD);
@@ -75,10 +63,23 @@ public class BlanksProcessor {
         }
     }
 
-    private static List<Integer> getColumnIndicesByRule(List<List<Integer>> ticket, IntPredicate predicate) {
+    private List<Integer> getColumnIndicesByRule(List<List<Integer>> ticket, IntPredicate predicate) {
         return IntStream.range(0, ticket.size())
                 .filter(predicate)
                 .boxed()
                 .collect(Collectors.toList());
+    }
+
+    private List<Integer> getShuffledColumnIndicesByRule(List<List<Integer>> ticket, IntPredicate predicate) {
+        return IntStream.range(0, ticket.size())
+                .filter(predicate)
+                .boxed()
+                .collect(Collectors.collectingAndThen(
+                        Collectors.toList(),
+                        list -> {
+                            Collections.shuffle(list);
+                            return list;
+                        }
+                ));
     }
 }

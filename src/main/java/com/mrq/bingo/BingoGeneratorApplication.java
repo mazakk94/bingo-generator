@@ -13,9 +13,10 @@ public class BingoGeneratorApplication {
                 System.out.printf("cannot parse argument [%s], count will be 10000%n", args[0]);
             }
         }
+        BingoStripsFactory factory = new BingoStripsFactory();
 
         long startTime = System.nanoTime();
-        BingoStripsFactory.generateBingoStrips(count);
+        factory.generateBingoStrips(count);
         long endTime = System.nanoTime();
 
         long duration = endTime - startTime; // Time in nanoseconds
