@@ -7,6 +7,7 @@ import com.mrq.bingo.core.ticket.TicketBuilder;
 import java.util.List;
 
 public class BingoStripGenerator {
+    public static final int TICKET_COLUMN_SIZE = 3;
     public static final int TICKET_COLUMNS_COUNT = 9;
     public static final int TICKETS_COUNT = 6;
 
@@ -14,7 +15,7 @@ public class BingoStripGenerator {
         ColumnsBuilder columnsBuilder = new ColumnsBuilder();
         List<List<List<Integer>>> ticketsStrip = columnsBuilder.initializeEmptyTickets();
         ticketsStrip = new TicketBuilder(columnsBuilder.prepareShuffledNumbersInColumns(), ticketsStrip).distributeNumbers();
-        ticketsStrip = new BlanksProcessor().fillTicketsBlanks(ticketsStrip);
+        ticketsStrip = new BlanksProcessor(ticketsStrip).fillTicketsBlanks();
         return ticketsStrip;
     }
 }

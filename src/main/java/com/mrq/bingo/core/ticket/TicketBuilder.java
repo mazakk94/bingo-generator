@@ -5,9 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.mrq.bingo.core.BingoStripGenerator.TICKETS_COUNT;
-import static com.mrq.bingo.core.BingoStripGenerator.TICKET_COLUMNS_COUNT;
-import static com.mrq.bingo.core.blanks.BlanksProcessor.TICKET_COLUMN_SIZE;
+import static com.mrq.bingo.core.BingoStripGenerator.*;
 
 public class TicketBuilder {
 

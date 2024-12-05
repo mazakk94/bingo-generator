@@ -6,18 +6,25 @@ import java.util.function.IntPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static com.mrq.bingo.core.BingoStripGenerator.TICKET_COLUMN_SIZE;
+
 public class BlanksProcessor {
 
-    public static final int TICKET_COLUMN_SIZE = 3;
     private static final int MIDDLE_INDEX = 1;
     private static final int BLANK_FIELD = 0;
     private static final int EXPECTED_BLANKS_COUNT = 4;
 
-    public List<List<List<Integer>>> fillTicketsBlanks(List<List<List<Integer>>> strip) {
-        for (List<List<Integer>> ticket : strip) {
+    private final List<List<List<Integer>>> ticketsStrip;
+
+    public BlanksProcessor(List<List<List<Integer>>> ticketsStrip) {
+        this.ticketsStrip = ticketsStrip;
+    }
+
+    public List<List<List<Integer>>> fillTicketsBlanks() {
+        for (List<List<Integer>> ticket : ticketsStrip) {
             fillBlanks(ticket);
         }
-        return strip;
+        return ticketsStrip;
     }
 
     private void fillBlanks(List<List<Integer>> ticket) {
